@@ -21,7 +21,7 @@ struct superblock {
   uint bmapstart;    // Block number of first free map block
 };
 
-#define NDIRECT 12
+#define NDIRECT 10
 #define NINDIRECT (BSIZE / sizeof(uint))
 #define MAXFILE (NDIRECT + NINDIRECT)
 
@@ -32,8 +32,11 @@ struct dinode {
   short minor;          // Minor device number (T_DEV only)
   short nlink;          // Number of links to inode in file system
   uint size;            // Size of file (bytes)
-  uint addrs[NDIRECT];   // Data block addresses
-  uint permission;      //File permission
+  uint addrs[NDIRECT+1];   // Data block addresses
+
+  short ownerid;        // The ID of the user who owns the file.
+  short groupid;        // The ID of the group who owns the file.
+  uint permission;           // The files mode e.g. 0700
 };
 
 // Inodes per block.

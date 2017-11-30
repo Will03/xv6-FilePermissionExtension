@@ -18,12 +18,15 @@ struct inode {
   int valid;          // inode has been read from disk?
 
   short type;         // copy of disk inode
-  uint permission;       //File permission
   short major;
   short minor;
   short nlink;
   uint size;
-  uint addrs[NDIRECT];
+  uint addrs[NDIRECT+1];
+
+  short ownerid;        // The ID of the user who owns the file.
+  short groupid;        // The ID of the group who owns the file.
+  uint permission;           // The files mode e.g. 0700
 };
 
 // table mapping major device number to
