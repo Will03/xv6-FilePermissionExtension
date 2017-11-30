@@ -18,12 +18,12 @@ struct inode {
   int valid;          // inode has been read from disk?
 
   short type;         // copy of disk inode
-  //short permission;      //File permission
+  uint permission;       //File permission
   short major;
   short minor;
   short nlink;
   uint size;
-  uint addrs[NDIRECT+1];
+  uint addrs[NDIRECT];
 };
 
 // table mapping major device number to
