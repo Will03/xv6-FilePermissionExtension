@@ -172,11 +172,12 @@ UPROGS=\
 	_sh\
 	_stressfs\
 	_usertests\
+	_login\
 	_wc\
 	_zombie\
 
-fs.img: mkfs README $(UPROGS)
-	./mkfs fs.img README $(UPROGS)
+fs.img: mkfs userpasswd shadow README $(UPROGS)
+	./mkfs fs.img userpasswd shadow README $(UPROGS)
 
 -include *.d
 
