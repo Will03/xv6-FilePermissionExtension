@@ -269,6 +269,7 @@ create(char *path, short type, short major, short minor)
   iupdate(ip);
 
 
+
  
 
   if(type == T_DIR){  // Create . and .. entries.
@@ -293,7 +294,9 @@ create(char *path, short type, short major, short minor)
   }
   else 
   {
+    ilock(id);
     num = readi(id,userid,0,sizeof(userid));
+    iunlockput(id);
     nowid = 0;
     now = 0;
     for(now = 0;now<num-1;now++){
@@ -311,6 +314,7 @@ create(char *path, short type, short major, short minor)
     }
     ip->groupid = nowid;
     iupdate(ip);
+
   }
   return ip;
 }
@@ -477,3 +481,33 @@ sys_pipe(void)
   fd[1] = fd1;
   return 0;
 }
+
+int
+sys_chmod(void)
+{
+  struct inode *id;
+  char *path;
+  int mod;
+  begin_op();
+  if(argstr(0, &path) < 0 || argint(1, &mod) < 0){
+    end_op();
+    return -1;
+  }
+  if((id = namei(path))==0){
+    end_op();
+    return -2;
+  }
+  if(mod<100 || mod > 777)
+  {
+    end_op();
+    return -3;
+  }
+  ilock(id);
+  id->permission = mod;
+  iupdate(id);
+  iunlockput(id);
+  end_op();
+
+  return mod;
+}
+
