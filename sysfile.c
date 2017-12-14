@@ -16,6 +16,7 @@
 #include "file.h"
 #include "fcntl.h"
 
+
 // Fetch the nth word-sized system call argument as a file descriptor
 // and return both the descriptor and the corresponding struct file.
 static int
@@ -267,6 +268,9 @@ create(char *path, short type, short major, short minor)
   ip->nlink = 1;
   iupdate(ip);
 
+
+ 
+
   if(type == T_DIR){  // Create . and .. entries.
     dp->nlink++;  // for ".."
     iupdate(dp);
@@ -280,6 +284,34 @@ create(char *path, short type, short major, short minor)
 
   iunlockput(dp);
 
+  struct inode *id;
+  char userid[30];
+  int nowid, num,now;
+  if((id = namei("/nowuserid\0"))==0){
+    //end_op();
+    return ip;
+  }
+  else 
+  {
+    num = readi(id,userid,0,sizeof(userid));
+    nowid = 0;
+    now = 0;
+    for(now = 0;now<num-1;now++){
+      if(userid[now] < 48 || userid[now]> 57)break;
+      nowid *=10;
+      nowid += (int)userid[now] - 48;  
+    }
+    ip->ownerid = nowid;
+    nowid = 0;
+    now++;
+    for(;now<num-1 ;now++){
+      if(userid[now] < 48 || userid[now]> 57)break;
+      nowid *=10;
+      nowid += (int)userid[now] - 48;  
+    }
+    ip->groupid = nowid;
+    iupdate(ip);
+  }
   return ip;
 }
 
@@ -346,6 +378,8 @@ sys_mkdir(void)
   }
   iunlockput(ip);
   end_op();
+
+ 
   return 0;
 }
 

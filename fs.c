@@ -21,6 +21,7 @@
 #include "buf.h"
 #include "file.h"
 
+#include "fcntl.h"
 #define min(a, b) ((a) < (b) ? (a) : (b))
 static void itrunc(struct inode*);
 // there should be one superblock per disk device, but we run with
@@ -173,7 +174,6 @@ void
 iinit(int dev)
 {
   int i = 0;
-  
   initlock(&icache.lock, "icache");
   for(i = 0; i < NINODE; i++) {
     initsleeplock(&icache.inode[i].lock, "inode");
@@ -206,8 +206,8 @@ ialloc(uint dev, short type)
       memset(dip, 0, sizeof(*dip));
       dip->type = type;
       dip->permission = 0x700;
-      dip->ownerid = 99;
-      dip->groupid = 1;
+      dip->ownerid = 0x1;
+      dip->groupid = 0x1;
       log_write(bp);   // mark it allocated on the disk
       brelse(bp);
       return iget(dev, inum);
@@ -235,6 +235,8 @@ iupdate(struct inode *ip)
   dip->nlink = ip->nlink;
   dip->size = ip->size;
   dip->permission = ip->permission;
+  dip->groupid = ip->groupid;
+  dip->ownerid = ip->ownerid;
   memmove(dip->addrs, ip->addrs, sizeof(ip->addrs));
   log_write(bp);
   brelse(bp);
@@ -309,6 +311,8 @@ ilock(struct inode *ip)
     ip->nlink = dip->nlink;
     ip->size = dip->size;
     ip->permission = dip->permission;
+    ip->groupid = dip->groupid;
+    ip->ownerid = dip->ownerid;
     memmove(ip->addrs, dip->addrs, sizeof(ip->addrs));
     brelse(bp);
     ip->valid = 1;
@@ -451,6 +455,8 @@ stati(struct inode *ip, struct stat *st)
   st->nlink = ip->nlink;
   st->size = ip->size;
   st->premission = ip->permission;
+  st->groupid = ip->groupid;
+  st->ownerid = ip->ownerid;
 }
 
 //PAGEBREAK!

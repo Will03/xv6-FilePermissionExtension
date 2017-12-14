@@ -175,9 +175,10 @@ UPROGS=\
 	_login\
 	_wc\
 	_zombie\
+	_willtest\
 
-fs.img: mkfs userpasswd shadow README $(UPROGS)
-	./mkfs fs.img userpasswd shadow README $(UPROGS)
+fs.img: mkfs userpasswd nowuserid README $(UPROGS)
+	./mkfs fs.img userpasswd nowuserid README $(UPROGS)
 
 -include *.d
 
