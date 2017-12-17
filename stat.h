@@ -2,6 +2,10 @@
 #define T_FILE 2   // File
 #define T_DEV  3   // Device
 
+#define P_read 1
+#define P_write 2
+#define P_execute 3
+
 struct stat {
   short type;  // Type of file
   int dev;     // File system's disk device
