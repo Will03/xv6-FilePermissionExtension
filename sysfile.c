@@ -16,6 +16,91 @@
 #include "file.h"
 #include "fcntl.h"
 
+//check the user premission. If return 1 mean can do
+//p_type mean Premission, read or write or execute 
+int 
+checkPremission(const struct inode *ip, int P_type)
+{
+  struct inode *id;
+  char userid[30];
+  int nowid, num,now,idmode;
+  int premis = ip->permission;
+  idmode = 3;
+  begin_op();
+  if((id = namei("/nowuserid\0"))==0){
+    end_op();
+    return -1;
+  }
+  ilock(id);
+  num = readi(id,userid,0,sizeof(userid));
+  end_op();
+  iunlockput(id);
+  nowid = 0;
+  now = 0;
+  for(now = 0;now<num-1;now++){
+    if(userid[now] < 48 || userid[now]> 57)break;
+    nowid *=10;
+    nowid += (int)userid[now] - 48;  
+  }
+  if(ip->ownerid == nowid || nowid == 0)
+  {
+    idmode = 1;
+  }
+  else
+  {
+    for(;now<num-1;){
+      nowid = 0;
+      now++;
+      for(;now<num-1 ;now++){
+        if(userid[now] < 48 || userid[now]> 57)break;
+        nowid *=10;
+        nowid += (int)userid[now] - 48;  
+      }
+      
+      if(ip->groupid == nowid){
+        idmode = 2;
+        break;
+      }
+      if(userid[now]!=';')break;
+    }
+  }
+
+  switch(idmode)
+  {
+    case 1:
+      premis = premis/100;
+      break;
+    case 2:
+      premis = ((premis % 100) - (premis % 10))/10;
+      break;
+    case 3:
+      premis = premis % 10;
+      break;
+  }
+  switch(P_type)
+  {
+    case 1:
+      if(premis>3)
+        return 1;
+      else
+        return 0;
+      break;
+    case 2:
+      if(premis == 2 ||premis == 3 || premis == 6 || premis == 7 )
+        return 1;
+      else
+        return 0;
+      break;
+    case 3:
+      if(premis%2 > 0)
+        return 1;
+      else
+        return 0;
+      break;
+    default:
+      return 0;
+  }
+}
 
 // Fetch the nth word-sized system call argument as a file descriptor
 // and return both the descriptor and the corresponding struct file.
@@ -112,6 +197,14 @@ sys_fstat(void)
 
   if(argfd(0, 0, &f) < 0 || argptr(1, (void*)&st, sizeof(*st)) < 0)
     return -1;
+
+
+  if(checkPremission(f->ip,P_execute) == 0)
+  {
+
+    return -2;
+  }
+
   return filestat(f, st);
 }
 
@@ -408,88 +501,6 @@ sys_mknod(void)
 }
 
 
-//check the user premission. If return 1 mean can do
-//p_type mean Premission, read or write or execute 
-int 
-checkPremission(const struct inode *ip, int P_type)
-{
-  struct inode *id;
-  char userid[30];
-  int nowid, num,now,idmode;
-  int premis = ip->permission;
-  idmode = 3;
-  if((id = namei("/nowuserid\0"))==0){
-    end_op();
-    return -1;
-  }
-  ilock(id);
-  num = readi(id,userid,0,sizeof(userid));
-  iunlockput(id);
-  nowid = 0;
-  now = 0;
-  for(now = 0;now<num-1;now++){
-    if(userid[now] < 48 || userid[now]> 57)break;
-    nowid *=10;
-    nowid += (int)userid[now] - 48;  
-  }
-  if(ip->ownerid == nowid)
-  {
-    idmode = 1;
-  }
-  else
-  {
-    for(;now<num-1;){
-      nowid = 0;
-      now++;
-      for(;now<num-1 ;now++){
-        if(userid[now] < 48 || userid[now]> 57)break;
-        nowid *=10;
-        nowid += (int)userid[now] - 48;  
-      }
-      if(ip->groupid == nowid){
-        idmode = 2;
-        break;
-      }
-
-    }
-  }
-
-  switch(idmode)
-  {
-    case 1:
-      premis = premis/100;
-      break;
-    case 2:
-      premis = (premis % 100) - (premis % 10);
-      break;
-    case 3:
-      premis = premis % 10;
-      break;
-  }
-  switch(P_type)
-  {
-    case 1:
-      if(premis>3)
-        return 1;
-      else
-        return 0;
-      break;
-    case 2:
-      if(premis == 2 ||premis == 3 || premis == 6 || premis == 7 )
-        return 1;
-      else
-        return 0;
-      break;
-    case 3:
-      if(premis%2 > 0)
-        return 1;
-      else
-        return 0;
-      break;
-    default:
-      return 0;
-  }
-}
 
 int
 sys_chdir(void)
@@ -509,13 +520,13 @@ sys_chdir(void)
     end_op();
     return -1;
   }
-  // if(checkPremission(ip,P_execute) == 0)
-  // {
-  //   iunlockput(ip);
-  //   end_op();
-  //   return -2;
-  // }
   iunlock(ip);
+  if(checkPremission(ip,P_execute) == 0)
+  {
+    end_op();
+    return -2;
+  }
+
   iput(curproc->cwd);
   end_op();
   curproc->cwd = ip;

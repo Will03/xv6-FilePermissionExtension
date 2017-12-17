@@ -145,7 +145,7 @@ int
 main(void)
 {
   static char buf[100];
-  int fd;
+  int fd, flag =0;
 
   // Ensure that three file descriptors are open.
   while((fd = open("console", O_RDWR)) >= 0){
@@ -160,19 +160,16 @@ main(void)
     if(buf[0] == 'c' && buf[1] == 'd' && buf[2] == ' '){
       // Chdir must be called by the parent, not the child.
       buf[strlen(buf)-1] = 0;  // chop \n
-      if(chdir(buf+3) < 0){
-        // if(flag == -2)
-        // {
-        //   printf(2, "cannot cd %s :premission deny\n", buf+3);  
-        // }
-        // else
-        printf(2, "cannot cd %s\n", buf+3);
-      continue;
+      if((flag = chdir(buf+3)) < 0){
+        if(flag == -2)
+        {
+          printf(2, "cannot cd %s :premission deny\n", buf+3);  
+        }
+        else
+          printf(2, "cannot cd %s\n", buf+3);
       }
-      // else if(flag>0){
-      //   printf(2,"%d",flag);
-      //   continue;
-      //   }
+      printf(2,"%d\n",flag);
+      continue;
     }
     if(fork1() == 0)
       runcmd(parsecmd(buf));
