@@ -22,3 +22,4 @@
 #define SYS_close  21
 
 #define SYS_chmod  22
+#define SYS_lsfstat  23

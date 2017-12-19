@@ -105,6 +105,7 @@ extern int sys_write(void);
 extern int sys_uptime(void);
 
 extern int sys_chmod(void);
+extern int sys_lsfstat(void);
 
 static int (*syscalls[])(void) = {
 [SYS_fork]    sys_fork,
@@ -130,6 +131,7 @@ static int (*syscalls[])(void) = {
 [SYS_close]   sys_close,
 
 [SYS_chmod]   sys_chmod,
+[SYS_lsfstat]   sys_lsfstat,
 };
 
 void

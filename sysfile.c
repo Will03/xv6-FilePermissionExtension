@@ -190,6 +190,18 @@ sys_close(void)
 }
 
 int
+sys_lsfstat(void)
+{
+  struct file *f;
+  struct stat *st;
+
+  if(argfd(0, 0, &f) < 0 || argptr(1, (void*)&st, sizeof(*st)) < 0)
+    return -1;
+
+  return filestat(f, st);
+}
+
+int
 sys_fstat(void)
 {
   struct file *f;
@@ -467,9 +479,22 @@ sys_mkdir(void)
 {
   char *path;
   struct inode *ip;
-
+  struct inode *id;
+  char name[DIRSIZ];
   begin_op();
-  if(argstr(0, &path) < 0 || (ip = create(path, T_DIR, 0, 0)) == 0){
+  if(argstr(0, &path) < 0 || (id = nameiparent(path, name)) == 0){
+    end_op();
+    return -3;
+  }
+ 
+  if(checkPremission(id,P_write) == 0)
+  {
+    end_op();
+    return -2;
+  }
+ end_op();
+  begin_op();
+  if((ip = create(path, T_DIR, 0, 0)) == 0){
     end_op();
     return -1;
   }
