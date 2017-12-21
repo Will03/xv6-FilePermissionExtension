@@ -32,3 +32,4 @@ SYSCALL(uptime)
 
 SYSCALL(chmod)
 SYSCALL(lsfstat)
+SYSCALL(su)

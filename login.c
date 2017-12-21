@@ -33,7 +33,7 @@ CheckAccount(int fd ,int writefd, char *user , char *passwd)
             i++;
             Auser[now] = '\0';
             if(i>=num){
-                printf(1,"Login:0AccountFile have error\n");
+                printf(1,"Login:AccountFile have error\n");
                 break;
             }
             
@@ -44,7 +44,7 @@ CheckAccount(int fd ,int writefd, char *user , char *passwd)
             i++;
             Apassword[now] = '\0';
             if(i>=num){
-                printf(1,"Login:1AccountFile have error\n");
+                printf(1,"Login:AccountFile have error\n");
                 break;
             }
                     
