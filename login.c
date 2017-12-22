@@ -2,6 +2,7 @@
 #include "user.h"
 #include "stat.h"
 #include "fcntl.h"
+#include "passwork.h"
 #define MAXLEN 20
 char *argv[] = { "sh", 0 };
 
@@ -13,7 +14,7 @@ CheckAccount(int fd ,int writefd, char *user , char *passwd)
     char AID[10];
     char Apassword[MAXLEN];
 
-    int num,now = 0;
+    int num;
 
     if(user[strlen(user)-1]  == '\n'){
   	    user[strlen(user)-1]  = '\0';	
@@ -22,40 +23,12 @@ CheckAccount(int fd ,int writefd, char *user , char *passwd)
   	    passwd[strlen(passwd)-1]  = '\0';	
     }
     while((num = read(fd, allWord, sizeof(allWord))) > 0){
-        now = 0;
         //printf(1,"%d\n",num);  
         for(int i =0;i<num;i++)
         {
-            now =0;
-            for(;allWord[i]!=';'||i == num;i++,now++){
-                Auser[now] = allWord[i];
-            }
-            i++;
-            Auser[now] = '\0';
-            if(i>=num){
-                printf(1,"Login:AccountFile have error\n");
-                break;
-            }
+            i = readpasswdfile(allWord,Auser,Apassword,AID,num,i);
+            if(i == -1)break;
             
-            now =0;
-            for(;allWord[i]!=';'||i == num;i++,now++){
-                Apassword[now] = allWord[i];
-            }
-            i++;
-            Apassword[now] = '\0';
-            if(i>=num){
-                printf(1,"Login:AccountFile have error\n");
-                break;
-            }
-                    
-            now =0;
-            for(;allWord[i]!='\n' && allWord[i]!='\0' ;i++,now++){
-                AID[now] = allWord[i];
-            }
-            AID[now] = '\0';
-            // printf(1,"%s\n",Auser);
-            // printf(1,"%s\n",Apassword);
-            // printf(1,"%s\n",AID);
             
             if(!strcmp(user,Auser) && !strcmp(passwd,Apassword)){
                 if(write(writefd,AID,sizeof(AID)) <= 0)

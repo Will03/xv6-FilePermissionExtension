@@ -146,7 +146,7 @@ main(void)
 {
   static char buf[100];
   int fd, flag =0;
-
+  int bash; 
   // Ensure that three file descriptors are open.
   while((fd = open("console", O_RDWR)) >= 0){
     if(fd >= 3){
@@ -154,9 +154,12 @@ main(void)
       break;
     }
   }
-
+  bash = open("/.bash_history",O_CREATE | O_RDWR);   
   // Read and run input commands.
   while(getcmd(buf, sizeof(buf)) >= 0){
+    if(buf[0]!='\n'){
+      write(bash, buf, strlen(buf));
+    }
     if(buf[0] == 'c' && buf[1] == 'd' && buf[2] == ' '){
       // Chdir must be called by the parent, not the child.
       buf[strlen(buf)-1] = 0;  // chop \n
