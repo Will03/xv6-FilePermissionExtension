@@ -64,7 +64,6 @@ checkPremission(const struct inode *ip, int P_type)
       if(userid[now]!=';')break;
     }
   }
-
   switch(idmode)
   {
     case 1:
@@ -535,7 +534,7 @@ sys_chdir(void)
   struct proc *curproc = myproc();
   
   begin_op();
-  if(argstr(0, &path) < 0 || (ip = namei(path)) == 0){
+  if(argstr(0, &path) < 0 || (ip = namei(path)) == 0){ 
     end_op();
     return -1;
   }

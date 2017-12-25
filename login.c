@@ -14,7 +14,6 @@ CheckAccount(int fd ,int writefd, char *user , char *passwd)
     char Apassword[MAXLEN];
 
     int num,now = 0;
-
     if(user[strlen(user)-1]  == '\n'){
   	    user[strlen(user)-1]  = '\0';	
     }
@@ -36,7 +35,6 @@ CheckAccount(int fd ,int writefd, char *user , char *passwd)
                 printf(1,"Login:0AccountFile have error\n");
                 break;
             }
-            
             now =0;
             for(;allWord[i]!=';'||i == num;i++,now++){
                 Apassword[now] = allWord[i];
@@ -55,20 +53,15 @@ CheckAccount(int fd ,int writefd, char *user , char *passwd)
             AID[now] = '\0';
             // printf(1,"%s\n",Auser);
             // printf(1,"%s\n",Apassword);
-            // printf(1,"%s\n",AID);
-            
-            if(!strcmp(user,Auser) && !strcmp(passwd,Apassword)){
-                if(write(writefd,AID,sizeof(AID)) <= 0)
+            // printf(2,"%s\n",AID);
+            if(!strcmp(user,Auser) && !strcmp(passwd,Apassword)){               
+	        
+		if(write(writefd,AID,sizeof(AID)) <= 0)
                 printf(1,"error\n");
                 //printf(1,"%d\n",num);
-                close(fd);
-                close(writefd);
-                
-                
-                char * dirToCreate = "/home/";
-      	        strcpy(dirToCreate + strlen(dirToCreate), user);
-      	        //printf(1,"%s\n", dirToCreate);
-      	        mkdir(dirToCreate);
+	
+                //close(fd);
+                //close(writefd);
       	        return 1;
             }
             //while(i <num && allWord[i++] != '\n');
@@ -84,6 +77,7 @@ main(void)
     char * username;
     char* password;
     mkdir("/home/");
+    chmod("home",777);
     while(1)
     {
         printf(1,"Username: ");
@@ -92,7 +86,7 @@ main(void)
         printf(1,"Password: ");
 		password = gets("password", MAXLEN);
         dup(0);  // stdout
-		dup(0);  // stderr
+	dup(0);  // stderr
         //printf(1, "init:
         if((writefd = open("/nowuserid", O_WRONLY)) < 0){
             printf(1,"Login: can't open nowuserid\n");
@@ -104,15 +98,17 @@ main(void)
         }
         
         if(CheckAccount(fd,writefd,username,password)){
-            printf(1,"Hello %s, have a nice's day\n", username);
-            
+	    close(fd);
+            close(writefd);
+	    
+            printf(2,"Hello %s, have a nice's day\n", username);            
             if((writefd = open("/nowuserid", O_RDONLY)) < 0){
             printf(1,"Login: can't open nowuserid\n");
             break; } 
             char a[20];
             if(read(writefd,a,sizeof(a))<=0)
                 printf(1,"error\n");
-            printf(1,"%s\n",a);
+            printf(2,"%s\n",a);
            
             pid = fork();
             if(pid < 0){
@@ -120,8 +116,10 @@ main(void)
                 exit();
             }
             if(pid == 0){   
-                //char * uname[] = {username};
-                exec("sh", argv);
+                char * uname[] = {username,0};
+		char * dirToCreate = "/home/";
+      	    	strcpy(dirToCreate + strlen(dirToCreate), username);     	     	mkdir(dirToCreate);
+                exec("sh", uname);
                 printf(1, "login: exec sh failed\n");
                 exit();
             }

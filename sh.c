@@ -130,10 +130,13 @@ runcmd(struct cmd *cmd)
   exit();
 }
 
+char path[256];
+char *username;
+
 int
 getcmd(char *buf, int nbuf)
 {
-  printf(2, "$ ");
+  printf(2, "%s's OS:%s~$ ",username,path);
   memset(buf, 0, nbuf);
   gets(buf, nbuf);
   if(buf[0] == 0) // EOF
@@ -142,11 +145,24 @@ getcmd(char *buf, int nbuf)
 }
 
 int
-main(void)
+main(int argc,char *argv[])
 {
+  username= argv[0];
+  char *dir=malloc(100);
   static char buf[100];
   int fd, flag =0;
 
+  strcpy(dir, "/home/");
+  strcpy(dir + strlen(dir),username);
+chdir(dir);
+  
+  int i=0;
+  for(i=0;i<strlen(dir); i++)
+  {
+    path[i]=dir[i];
+  }
+  path[i]='/';
+  int lastPos =i;
   // Ensure that three file descriptors are open.
   while((fd = open("console", O_RDWR)) >= 0){
     if(fd >= 3){
@@ -168,7 +184,39 @@ main(void)
         else
           printf(2, "cannot cd %s\n", buf+3);
       }
-      printf(2,"%d\n",flag);
+      else
+      {
+        if(buf[3]=='.' && buf[4] == '.')
+        {
+	  path[strlen(path)-1]='\0';
+	  while(path[lastPos]!='/')
+	  {
+	    path[lastPos--]='\0';
+     	  }
+        }
+	else if(buf[3]== '/' && (buf[4]== ' ' || buf[4]== '\0'))
+	{
+	  path[0]='/';
+ 	  int i;
+	  for(i=1;i<strlen(path);i++)
+	  {
+	    path[i]=0;
+	  }
+	  lastPos=1;
+	}
+	else
+	{
+	  int iter=3;
+	  while(buf[iter]!='\0')
+	  {
+	    path[lastPos++]=buf[iter];
+	    iter++;
+	  }
+          path[lastPos++]='/';
+	  lastPos++;
+	  iter=3;
+	}
+      }
       continue;
     }
     if(fork1() == 0)
