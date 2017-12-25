@@ -10,7 +10,7 @@ main(int argc, char *argv[])
         printf(2,"chmod: You enter wrong input \nHelp: Please enter the fliename and mode\n");
         exit();
     }
-    if((flag = chmod(argv[1],atoi(argv[2])))>100){
+    if((flag = chmod(argv[2],atoi(argv[1])))>100){
     printf(2,"chmod flag = %d\n",flag);
     }
     else if(flag == -1)

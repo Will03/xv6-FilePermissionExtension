@@ -154,15 +154,18 @@ main(int argc,char *argv[])
 
   strcpy(dir, "/home/");
   strcpy(dir + strlen(dir),username);
-chdir(dir);
+  chdir(dir);
   
   int i=0;
+  int lastPos =i;
+  int bash; 
+
   for(i=0;i<strlen(dir); i++)
   {
     path[i]=dir[i];
   }
   path[i]='/';
-  int lastPos =i;
+
   // Ensure that three file descriptors are open.
   while((fd = open("console", O_RDWR)) >= 0){
     if(fd >= 3){
@@ -170,9 +173,12 @@ chdir(dir);
       break;
     }
   }
-
+  bash = open("/.bash_history",O_CREATE | O_RDWR);   
   // Read and run input commands.
   while(getcmd(buf, sizeof(buf)) >= 0){
+    if(buf[0]!='\n'){
+      write(bash, buf, strlen(buf));
+    }
     if(buf[0] == 'c' && buf[1] == 'd' && buf[2] == ' '){
       // Chdir must be called by the parent, not the child.
       buf[strlen(buf)-1] = 0;  // chop \n
@@ -188,11 +194,11 @@ chdir(dir);
       {
         if(buf[3]=='.' && buf[4] == '.')
         {
-	  path[strlen(path)-1]='\0';
-	  while(path[lastPos]!='/')
-	  {
-	    path[lastPos--]='\0';
-     	  }
+	        path[strlen(path)-1]='\0';
+	        while(path[lastPos]!='/')
+	        {
+	          path[lastPos--]='\0';
+     	    }
         }
 	else if(buf[3]== '/' && (buf[4]== ' ' || buf[4]== '\0'))
 	{
