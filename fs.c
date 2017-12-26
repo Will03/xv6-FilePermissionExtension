@@ -206,6 +206,7 @@ ialloc(uint dev, short type)
       memset(dip, 0, sizeof(*dip));
       dip->type = type;
       dip->permission = 700;
+      dip->attributes = 0;
       dip->ownerid = 0;
       dip->groupid = 0;
       log_write(bp);   // mark it allocated on the disk
@@ -457,6 +458,7 @@ stati(struct inode *ip, struct stat *st)
   st->premission = ip->permission;
   st->groupid = ip->groupid;
   st->ownerid = ip->ownerid;
+  st->attribute = ip->attributes;
 }
 
 //PAGEBREAK!

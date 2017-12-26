@@ -12,7 +12,8 @@ struct stat {
   uint ino;    // Inode number
   short nlink; // Number of links to file
   uint size;   // Size of file in bytes
-  uint premission;
-  uint ownerid;
-  uint groupid;
+  short premission;
+  short ownerid;
+  short groupid;
+  short attribute;
 };

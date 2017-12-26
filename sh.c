@@ -136,7 +136,7 @@ char *username;
 int
 getcmd(char *buf, int nbuf)
 {
-  printf(2, "%s's OS:%s~$ ",username,path);
+  printf(2, "OS:%s~$ ",path);
   memset(buf, 0, nbuf);
   gets(buf, nbuf);
   if(buf[0] == 0) // EOF
@@ -157,7 +157,7 @@ main(int argc,char *argv[])
   chdir(dir);
   
   int i=0;
-  int lastPos =i;
+  int lastPos =0;
   int bash; 
 
   for(i=0;i<strlen(dir); i++)
@@ -165,7 +165,7 @@ main(int argc,char *argv[])
     path[i]=dir[i];
   }
   path[i]='/';
-
+  lastPos =i;
   // Ensure that three file descriptors are open.
   while((fd = open("console", O_RDWR)) >= 0){
     if(fd >= 3){
@@ -177,6 +177,7 @@ main(int argc,char *argv[])
   // Read and run input commands.
   while(getcmd(buf, sizeof(buf)) >= 0){
     if(buf[0]!='\n'){
+      //need to add user name & time
       write(bash, buf, strlen(buf));
     }
     if(buf[0] == 'c' && buf[1] == 'd' && buf[2] == ' '){
@@ -215,11 +216,10 @@ main(int argc,char *argv[])
 	  int iter=3;
 	  while(buf[iter]!='\0')
 	  {
-	    path[lastPos++]=buf[iter];
+	    path[++lastPos]=buf[iter];
 	    iter++;
 	  }
-          path[lastPos++]='/';
-	  lastPos++;
+          path[++lastPos]='/';
 	  iter=3;
 	}
       }

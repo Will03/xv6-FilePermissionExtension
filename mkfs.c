@@ -234,8 +234,8 @@ ialloc(ushort type)
   // Set notable defaults for our permission attributes.
   din.ownerid = xshort(0);
   din.groupid = xshort(0);
-  din.permission = xint(777);
-
+  din.permission = xshort(777);
+  din.attributes = xshort(0);
   winode(inum, &din);
   return inum;
 }

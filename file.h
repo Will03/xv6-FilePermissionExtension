@@ -26,7 +26,8 @@ struct inode {
 
   short ownerid;        // The ID of the user who owns the file.
   short groupid;        // The ID of the group who owns the file.
-  uint permission;           // The files mode e.g. 0700
+  short permission;           // The files mode e.g. 0700
+  short attributes;
 };
 
 // table mapping major device number to

@@ -25,3 +25,5 @@
 #define SYS_lsfstat  23
 #define SYS_su  24
 #define SYS_useradd  25
+#define SYS_lsattr  26
+#define SYS_chattr  27

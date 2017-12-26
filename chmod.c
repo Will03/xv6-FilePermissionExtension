@@ -19,11 +19,15 @@ main(int argc, char *argv[])
     }
     else if(flag == -2)
     {
-        printf(2,"chmod: Your input file %s is not exist\n",argv[0]);
+        printf(2,"chmod: Your input file %s is not exist\n",argv[2]);
     }
     else if(flag == -3)
     {
         printf(2,"chmod: You input mode not in the range\n");
+    }
+    else if(flag == -4)
+    {
+        printf(2,"chattr: premission deny\n");
     }
     exit();
 }

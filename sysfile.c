@@ -23,11 +23,16 @@ checkPremission(const struct inode *ip, int P_type)
 {
   struct inode *id;
   char userid[30];
-  int nowid, num,now,idmode;
-  int premis = ip->permission;
-  idmode = 3;
+  int nowid, num,now,idmode = 3;
+  short premis = ip->permission;
+  short attri = ip->attributes;
+  
+  if(attri && P_type!=P_execute)
+  {
+    return 0;
+  }
   begin_op();
-  if((id = namei("/nowuserid\0"))==0){
+  if((id = namei("/.nowuserid\0"))==0){
     end_op();
     return -1;
   }
@@ -78,19 +83,19 @@ checkPremission(const struct inode *ip, int P_type)
   }
   switch(P_type)
   {
-    case 1:
+    case P_read:
       if(premis>3)
         return 1;
       else
         return 0;
       break;
-    case 2:
+    case P_write:
       if(premis == 2 ||premis == 3 || premis == 6 || premis == 7 )
         return 1;
       else
         return 0;
       break;
-    case 3:
+    case P_execute:
       if(premis%2 > 0)
         return 1;
       else
@@ -392,7 +397,7 @@ create(char *path, short type, short major, short minor)
   struct inode *id;
   char userid[30];
   int nowid, num,now;
-  if((id = namei("/nowuserid\0"))==0){
+  if((id = namei("/.nowuserid\0"))==0){
     end_op();
     return ip;
   }
@@ -608,12 +613,90 @@ sys_pipe(void)
 }
 
 int
+sys_chattr(void)
+{
+  struct inode *id;
+  char *path;
+  int mod,num;
+  char userid[30];
+  int nowid,now;
+  begin_op();
+  
+  if((id = namei("/.nowuserid\0"))==0){
+    end_op();
+    return -1;
+  }
+  ilock(id);
+  num = readi(id,userid,0,sizeof(userid));
+  end_op();
+  iunlockput(id);
+  nowid = 0;
+  now = 0;
+  begin_op();
+  
+  for(now = 0;now<num-1;now++){
+    if(userid[now] < 48 || userid[now]> 57)break;
+    nowid *=10;
+    nowid += (int)userid[now] - 48;  
+  }
+
+  if(argstr(0, &path) < 0 || argint(1, &mod) < 0){
+    end_op();
+    return -1;
+  }
+
+  if((id = namei(path))==0){
+    end_op();
+    return -2;
+  }
+  if(mod<0 || mod > 100)
+  {
+    end_op();
+    return -3;
+  }
+
+  if(nowid!=0){
+    end_op();
+    return -4;
+  }
+
+  ilock(id);
+
+  id->attributes = mod;
+  iupdate(id);
+  iunlockput(id);
+  end_op();
+
+  return mod;
+}
+
+int
 sys_chmod(void)
 {
   struct inode *id;
   char *path;
-  int mod;
+  int mod,num;
+  char userid[30];
+  int nowid,now;
   begin_op();
+
+  if((id = namei("/.nowuserid\0"))==0){
+    end_op();
+    return -1;
+  }
+  ilock(id);
+  num = readi(id,userid,0,sizeof(userid));
+  end_op();
+  iunlockput(id);
+  nowid = 0;
+  now = 0;
+  begin_op();
+  
+  for(now = 0;now<num-1;now++){
+    if(userid[now] < 48 || userid[now]> 57)break;
+    nowid *=10;
+    nowid += (int)userid[now] - 48;  
+  }
   if(argstr(0, &path) < 0 || argint(1, &mod) < 0){
     end_op();
     return -1;
@@ -628,6 +711,14 @@ sys_chmod(void)
     return -3;
   }
   ilock(id);
+  if(id->ownerid != nowid)
+  {
+    iupdate(id);
+    iunlockput(id);
+    end_op();
+    return -4;
+  }
+
   id->permission = mod;
   iupdate(id);
   iunlockput(id);

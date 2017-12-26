@@ -65,7 +65,7 @@ int main(int argc, char *argv[])
         printf(2, "userpasswd: you need to input username and password\n");
         exit();
     }
-    if((fd = open("/userpasswd", O_RDONLY)) < 0){
+    if((fd = open("/.userpasswd", O_RDONLY)) < 0){
         printf(1,"useradd: can't open Userpassword\n");
         exit();
     }
@@ -90,7 +90,7 @@ int main(int argc, char *argv[])
         // printf(2,"%d\n",num);
         // printf(2,"%s\n",idbuf);
         close(fd);
-        if((fd = open("/userpasswd", O_RDWR)) < 0){
+        if((fd = open("/.userpasswd", O_RDWR)) < 0){
             printf(1,"useradd: can't open Userpassword\n");
             exit();
         }

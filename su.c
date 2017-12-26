@@ -39,11 +39,11 @@ main(int argc, char *argv[])
     int fd,writefd,flag = 0;
     char *userpasswd,*user = "";
     char password[MAXLEN],ID[MAXLEN];
-    if((writefd = open("/nowuserid", O_WRONLY)) < 0){
+    if((writefd = open("/.nowuserid", O_WRONLY)) < 0){
         printf(1,"su: can't open nowuserid\n");
         exit();
     } 
-    if((fd = open("/userpasswd", O_RDONLY)) < 0){
+    if((fd = open("/.userpasswd", O_RDONLY)) < 0){
         close(writefd);
         printf(1,"su: can't open Userpassword\n");
         exit();

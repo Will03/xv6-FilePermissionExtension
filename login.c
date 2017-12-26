@@ -65,11 +65,11 @@ main(void)
         dup(0);  // stdout
 	dup(0);  // stderr
         //printf(1, "init:
-        if((writefd = open("/nowuserid", O_WRONLY)) < 0){
+        if((writefd = open("/.nowuserid", O_WRONLY)) < 0){
             printf(1,"Login: can't open nowuserid\n");
             break;
         } 
-        if((fd = open("/userpasswd", O_RDONLY)) < 0){
+        if((fd = open("/.userpasswd", O_RDONLY)) < 0){
             printf(1,"Login: can't open Userpassword\n");
             break;
         }
@@ -79,7 +79,7 @@ main(void)
             close(writefd);
 	    
             printf(2,"Hello %s, have a nice's day\n", username);            
-            if((writefd = open("/nowuserid", O_RDONLY)) < 0){
+            if((writefd = open("/.nowuserid", O_RDONLY)) < 0){
             printf(1,"Login: can't open nowuserid\n");
             break; } 
             char a[20];
