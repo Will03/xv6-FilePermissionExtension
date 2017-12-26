@@ -13,7 +13,7 @@ CheckAccount(int fd ,int writefd, char *user , char *passwd)
     char Auser[MAXLEN];
     char AID[10];
     char Apassword[MAXLEN];
-
+    char cipher[MAXLEN];
     int num;
 
     if(user[strlen(user)-1]  == '\n'){
@@ -31,7 +31,10 @@ CheckAccount(int fd ,int writefd, char *user , char *passwd)
             if(i == -1)break;
             
             
-            if(!strcmp(user,Auser) && !strcmp(passwd,Apassword)){
+            
+            encodepasswd(cipher,passwd);
+
+            if(!strcmp(user,Auser) && !strcmp(cipher,Apassword)){
                 if(write(writefd,AID,sizeof(AID)) <= 0)
 
                 printf(1,"error\n");

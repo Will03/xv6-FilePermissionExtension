@@ -2,6 +2,7 @@
 #include "user.h"
 #include "syscall.h"
 #include "fcntl.h"
+#include "passwork.h"
 #define MAXLEN 20
 int
 seachlastuserid(char* allWord,int num,char* newid)
@@ -24,6 +25,15 @@ seachlastuserid(char* allWord,int num,char* newid)
             printf(1,"Login:AccountFile have error\n");
             return -1;
         }    
+
+        now =0;
+        for(;allWord[i]!=';'||i == num;i++,now++);
+        i++;
+        if(i>=num){
+            printf(1,"Login:AccountFile have error\n");
+            return -1;
+        } 
+
         now =0;
         for(;allWord[i]!=';'||i == num;i++,now++){
             AID[now] = allWord[i];
@@ -60,6 +70,7 @@ int main(int argc, char *argv[])
 {
     int fd,num,flag = 0;
     char allWord[128],buf[64],newid[8],idbuf[17];
+    char cipher[MAXLEN];
     if(argc != 3)
     {
         printf(2, "userpasswd: you need to input username and password\n");
@@ -80,7 +91,7 @@ int main(int argc, char *argv[])
         }
     }
     if(flag >0){
-        //printf(2,"id:%s\n",newid);
+        printf(2,"id:%s\n",newid);
         for(num = 0;newid[num] == '\0';num++);
         num++;
         strcpy(idbuf,newid);
@@ -101,8 +112,10 @@ int main(int argc, char *argv[])
         }
         strcpy(buf,argv[1]);
         strcpy(buf+strlen(buf),";");
-        strcpy(buf+strlen(buf),argv[2]);
-        strcpy(buf+strlen(buf),";");
+
+        encodepasswd(cipher,argv[2]);
+        strcpy(buf+strlen(buf),cipher);
+        strcpy(buf+strlen(buf),";0x6D;");
         strcpy(buf+strlen(buf),idbuf);
         printf(2,"%s",buf);
         if( !write(fd, buf,strlen(buf))){

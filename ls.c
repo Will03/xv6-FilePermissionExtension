@@ -66,8 +66,13 @@ ls(char *path, int commandNumber)
       fileName = fmtname(buf);
       if(commandNumber == 0 && fileName[0] != '.')
         printf(1, "%s %d %d %d %d %d %d\n", fileName, st.type, st.ino, st.size, st.premission, st.ownerid,st.groupid);
+
+      else if ( commandNumber == 0 &&  (!strcmp(fileName,".             ")||!strcmp(fileName,"..            ")))
+        printf(1, "%s %d %d %d %d %d %d\n", fileName, st.type, st.ino, st.size, st.premission, st.ownerid,st.groupid);
+
       else if(commandNumber == 1)
         printf(1, "%s %d %d %d %d %d %d\n", fileName, st.type, st.ino, st.size, st.premission, st.ownerid,st.groupid);
+      
     }
     break;
   }

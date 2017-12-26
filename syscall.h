@@ -27,3 +27,4 @@
 #define SYS_useradd  25
 #define SYS_lsattr  26
 #define SYS_chattr  27
+#define SYS_cat 28

@@ -5,7 +5,7 @@
 char buf[512];
 
 void
-cat(int fd)
+fcat(int fd)
 {
   int n;
 
@@ -24,19 +24,27 @@ cat(int fd)
 int
 main(int argc, char *argv[])
 {
-  int fd, i;
+  int fd, i,flag;
 
   if(argc <= 1){
     cat(0);
     exit();
   }
-
   for(i = 1; i < argc; i++){
+    if((flag = cat(argv[i]))<0){
+      if(flag == -3)
+        printf(2, "cat: premission deny\n");
+      else if(flag == -2)
+        printf(2, "cat: open file error\n");
+      else if(flag == -1)
+        printf(2, "cat: input error\n");
+      exit();
+    }
     if((fd = open(argv[i], 0)) < 0){
       printf(1, "cat: cannot open %s\n", argv[i]);
       exit();
     }
-    cat(fd);
+    fcat(fd);
     close(fd);
   }
   exit();

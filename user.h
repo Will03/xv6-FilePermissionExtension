@@ -27,6 +27,7 @@ int uptime(void);
 int chmod(char*,int);
 int lsfstat(int fd, struct stat*);
 int chattr(char*,int);
+int cat(char*);
 // ulib.c
 int stat(char*, struct stat*);
 char* strcpy(char*, char*);

@@ -316,7 +316,16 @@ sys_unlink(void)
 
   if((ip = dirlookup(dp, name, &off)) == 0)
     goto bad;
+  
+  if(checkPremission(dp,P_write) == 0)
+  {
+    end_op();
+    return -2;
+  }
+  
   ilock(ip);
+
+
 
   if(ip->nlink < 1)
     panic("unlink: nlink < 1");
@@ -727,3 +736,26 @@ sys_chmod(void)
   return mod;
 }
 
+int
+sys_cat(void)
+{
+  char *path;
+  struct inode *id;
+  begin_op();
+  if(argstr(0, &path) < 0 ){
+    end_op();
+    return -1;
+  }
+  if((id = namei(path))==0){
+    end_op();
+    return -2;
+  }
+
+  if(checkPremission(id,P_read) == 0)
+  {
+    end_op();
+    return -3;
+  }
+  end_op();
+  return 0;
+}
