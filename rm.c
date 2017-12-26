@@ -13,7 +13,7 @@ main(int argc, char *argv[])
   }
 
   for(i = 1; i < argc; i++){
-    if((flag = unlink(argv[i]) < 0)<0){
+    if((flag = unlink(argv[i]))<0){
       if(flag ==-2)
         printf(2, "rm: premission deny\n");
       else

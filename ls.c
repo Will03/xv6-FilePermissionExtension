@@ -26,7 +26,7 @@ void
 ls(char *path, int commandNumber)
 {
   char buf[512], *p, *fileName;
-  int fd;
+  int fd,flag;
   struct dirent de;
   struct stat st;
 
@@ -35,8 +35,11 @@ ls(char *path, int commandNumber)
     return;
   }
 
-  if(fstat(fd, &st) < 0){
-    printf(2, "ls: cannot stat %s\n", path);
+   if((flag = (fstat(fd, &st))) < 0){
+    if(flag <= -2)
+      printf(2, "ls: cannot stat %s :premission deny\n", path);  
+    else
+      printf(2, "ls: cannot stat %s\n", path);
     close(fd);
     return;
   }

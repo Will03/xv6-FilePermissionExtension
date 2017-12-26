@@ -319,6 +319,7 @@ sys_unlink(void)
   
   if(checkPremission(dp,P_write) == 0)
   {
+    iunlockput(dp);
     end_op();
     return -2;
   }
