@@ -5,7 +5,7 @@
 int
 main(int argc, char *argv[])
 {
-  int i;
+  int i,flag = 0;
 
   if(argc < 2){
     printf(2, "Usage: rm files...\n");
@@ -13,8 +13,11 @@ main(int argc, char *argv[])
   }
 
   for(i = 1; i < argc; i++){
-    if(unlink(argv[i]) < 0){
-      printf(2, "rm: %s failed to delete\n", argv[i]);
+    if((flag = unlink(argv[i]))<0){
+      if(flag ==-2)
+        printf(2, "rm: premission deny\n");
+      else
+        printf(2, "rm: %s failed to delete\n", argv[i]);
       break;
     }
   }

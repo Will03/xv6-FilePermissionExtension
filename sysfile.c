@@ -316,7 +316,17 @@ sys_unlink(void)
 
   if((ip = dirlookup(dp, name, &off)) == 0)
     goto bad;
+  
+  if(checkPremission(dp,P_write) == 0)
+  {
+    iunlockput(dp);
+    end_op();
+    return -2;
+  }
+  
   ilock(ip);
+
+
 
   if(ip->nlink < 1)
     panic("unlink: nlink < 1");
