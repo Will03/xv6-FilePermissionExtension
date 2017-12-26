@@ -23,10 +23,10 @@ fmtname(char *path)
 }
 
 void
-ls(char *path)
+ls(char *path, int commandNumber)
 {
-  char buf[512], *p;
-  int fd , flag = 0;
+  char buf[512], *p, *fileName;
+  int fd;
   struct dirent de;
   struct stat st;
 
@@ -35,11 +35,8 @@ ls(char *path)
     return;
   }
 
-  if((flag = (fstat(fd, &st))) < 0){
-    if(flag <= -2)
-      printf(2, "ls: cannot stat %s :premission deny\n", path);  
-    else
-      printf(2, "ls: cannot stat %s\n", path);
+  if(fstat(fd, &st) < 0){
+    printf(2, "ls: cannot stat %s\n", path);
     close(fd);
     return;
   }
@@ -66,7 +63,11 @@ ls(char *path)
         printf(1, "ls: cannot stat %s\n", buf);
         continue;
       }
-      printf(1, "%s %d %d %d %d %d %d\n", fmtname(buf), st.type, st.ino, st.size, st.premission, st.ownerid,st.groupid);
+      fileName = fmtname(buf);
+      if(commandNumber == 0 && fileName[0] != '.')
+        printf(1, "%s %d %d %d %d %d %d\n", fileName, st.type, st.ino, st.size, st.premission, st.ownerid,st.groupid);
+      else if(commandNumber == 1)
+        printf(1, "%s %d %d %d %d %d %d\n", fileName, st.type, st.ino, st.size, st.premission, st.ownerid,st.groupid);
     }
     break;
   }
@@ -76,13 +77,32 @@ ls(char *path)
 int
 main(int argc, char *argv[])
 {
-  int i;
+  int i, j, commandNumber = 0;
+  const int commandAmount = 1;
+  const char command[1][3] = { "-a" };
 
   if(argc < 2){
-    ls(".");
+    ls(".", 0);
     exit();
   }
-  for(i=1; i<argc; i++)
-    ls(argv[i]);
+  for(i=1; i<argc; i++){
+    int isNotCommand = 0;
+    for(j=0; j<commandAmount; ++j){
+      int index = 0, isCorrect = 1;
+      while(argv[i][index] != '\0' && command[j][index] != '\0'){
+        if(argv[i][index] != command[j][index]){
+          isCorrect = 0;
+          break;
+        }
+        ++index;
+      }
+      if(isCorrect)
+        commandNumber = j+1;
+      else
+        isNotCommand = 1;
+    }
+    if(isNotCommand)
+      ls(argv[i], commandNumber);
+  }
   exit();
 }

@@ -180,6 +180,7 @@ UPROGS=\
 	_useradd\
 	_lsattr\
 	_chattr\
+	_mv\
 
 fs.img: mkfs .userpasswd .nowuserid README $(UPROGS)
 	./mkfs fs.img .userpasswd .nowuserid README $(UPROGS)
