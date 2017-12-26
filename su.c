@@ -11,7 +11,6 @@ CheckUser( int fd,char *user , char *passwd, char *ID)
     char Auser[MAXLEN];
     char AID[MAXLEN];
     char Apassword[MAXLEN];
-
     int num = 0;
     if(user[strlen(user)-1]  == '\n'){
   	    user[strlen(user)-1]  = '\0';	
@@ -74,7 +73,13 @@ main(int argc, char *argv[])
         if(userpasswd[strlen(userpasswd)-1]  == '\n'){
   	        userpasswd[strlen(userpasswd)-1]  = '\0';	
         }
-        if(!strcmp(userpasswd,password)){
+
+
+        char cipher[MAXLEN];
+        encodepasswd(cipher,userpasswd);
+        
+        
+        if(!strcmp(cipher,password)){
             if(write(writefd,ID,sizeof(ID)) <= 0)
             {
                 printf(1,"su: write file error\n");
@@ -84,7 +89,7 @@ main(int argc, char *argv[])
             }
             printf(2,"Welcome\n",user);
         }
-         if(strcmp(userpasswd,password)!=0){
+         if(strcmp(cipher,password)!=0){
              printf(2,"su: user password error\n");
          }
     }

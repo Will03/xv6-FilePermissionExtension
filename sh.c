@@ -145,6 +145,30 @@ getcmd(char *buf, int nbuf)
 }
 
 int
+getnowid(char *id)
+{
+  int fd,num,now = 0;
+  char buf[20];
+  if((fd = open("/.nowuserid", O_RDONLY))>=0)
+  {
+    if((num = read(fd,buf,sizeof(buf)))>0){
+
+      for(now = 0;now<num-1;now++){
+        if(buf[now] < 48 || buf[now]> 57)break;
+        id[now] = buf[now];
+      }
+      id[now] = '\0';
+      close(fd);
+      return 0;
+    }
+    close(fd);
+    return -2;
+  }
+  close(fd);
+  return -1;
+}
+
+int
 main(int argc,char *argv[])
 {
   username= argv[0];
@@ -159,7 +183,7 @@ main(int argc,char *argv[])
   int i=0;
   int lastPos =0;
   int bash; 
-
+  char id[5],idbuf[10];
   for(i=0;i<strlen(dir); i++)
   {
     path[i]=dir[i];
@@ -177,7 +201,11 @@ main(int argc,char *argv[])
   // Read and run input commands.
   while(getcmd(buf, sizeof(buf)) >= 0){
     if(buf[0]!='\n'){
-      //need to add user name & time
+      getnowid(id);
+      strcpy(idbuf,"ID: ");
+      strcpy(idbuf+strlen(idbuf),id);
+      strcpy(idbuf+strlen(idbuf)," -> ");
+      write(bash,idbuf,strlen(idbuf));
       write(bash, buf, strlen(buf));
     }
     if(buf[0] == 'c' && buf[1] == 'd' && buf[2] == ' '){
