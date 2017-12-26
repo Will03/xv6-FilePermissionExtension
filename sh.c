@@ -183,7 +183,11 @@ main(int argc,char *argv[])
     if(buf[0] == 'c' && buf[1] == 'd' && buf[2] == ' '){
       // Chdir must be called by the parent, not the child.
       buf[strlen(buf)-1] = 0;  // chop \n
-      if((flag = chdir(buf+3)) < 0){
+      if(strlen(path)==1 && (buf[3]=='.' && buf[4]=='.'))
+      {
+        printf(1, "cannot cd ..\n");
+      }      
+      else if((flag = chdir(buf+3)) < 0){
         if(flag == -2)
         {
           printf(2, "cannot cd %s :premission deny\n", buf+3);  
@@ -210,6 +214,10 @@ main(int argc,char *argv[])
 	    path[i]=0;
 	  }
 	  lastPos=1;
+	}
+	else if(buf[3]=='.' && strlen(buf)==4)
+	{
+	  continue;
 	}
 	else
 	{
