@@ -27,7 +27,7 @@ checkPremission(const struct inode *ip, int P_type)
   short premis = ip->permission;
   short attri = ip->attributes;
   
-  if(attri && P_type!=P_execute)
+  if(attri && P_type==P_write)
   {
     return 0;
   }
@@ -316,8 +316,8 @@ sys_unlink(void)
 
   if((ip = dirlookup(dp, name, &off)) == 0)
     goto bad;
-  
-  if(checkPremission(dp,P_write) == 0)
+
+  if( checkPremission(dp,P_write) == 0)
   {
     iunlockput(dp);
     end_op();

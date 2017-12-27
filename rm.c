@@ -13,14 +13,19 @@ main(int argc, char *argv[])
   }
 
   for(i = 1; i < argc; i++){
-    if((flag = unlink(argv[i]))<0){
+    flag = unlink(argv[i]);
+    if(flag<0){
       if(flag ==-2)
         printf(2, "rm: premission deny\n");
-      else
+      else if(flag !=-2)
         printf(2, "rm: %s failed to delete\n", argv[i]);
+
       break;
     }
+    else 
+      printf(2,"rm sucess\n");
   }
-
   exit();
 }
+
+
