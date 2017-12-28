@@ -98,9 +98,9 @@ main(int argc, char *argv[])
                 
                 id += ID[i] - 48;
             }
-            printf(2,"%d %d\n",setuid(id,1),setgid(id,1));
+            printf(2,"uid = %d gid = %d\n",setuid(id,1),setgid(id,1));
             
-            printf(2,"Welcome\n",user);
+            //printf(2,"Welcome\n",user);
         }
          if(strcmp(cipher,password)!=0){
              printf(2,"su: user password error\n");

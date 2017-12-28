@@ -48,8 +48,7 @@ CheckAccount(int fd ,int writefd, char *user , char *passwd)
                     
                     id += AID[i] - 48;
                 }
-                printf(2,"%d %d\n",setuid(id,mod),setgid(id,mod));
-                printf(2,"%d\n",getuid());
+                printf(2,"uid = %d gid = %d\n",setuid(id,mod),setgid(id,mod));
       	        return 1;
             }
             //while(i <num && allWord[i++] != '\n');
