@@ -37,7 +37,7 @@ ls(char *path)
 
   if((flag = (fstat(fd, &st))) < 0){
     if(flag <= -2)
-      printf(2, "ls: cannot stat %s :premission deny\n", path);  
+      printf(2, "ls: cannot stat %s :permission deny\n", path);  
     else
       printf(2, "ls: cannot stat %s\n", path);
     close(fd);

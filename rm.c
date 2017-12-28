@@ -16,7 +16,7 @@ main(int argc, char *argv[])
     flag = unlink(argv[i]);
     if(flag<0){
       if(flag ==-2)
-        printf(2, "rm: premission deny\n");
+        printf(2, "rm: permission deny\n");
       else if(flag !=-2)
         printf(2, "rm: %s failed to delete\n", argv[i]);
 

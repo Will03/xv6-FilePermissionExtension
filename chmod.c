@@ -27,7 +27,7 @@ main(int argc, char *argv[])
     }
     else if(flag == -4)
     {
-        printf(2,"chattr: premission deny\n");
+        printf(2,"chattr: permission deny\n");
     }
     exit();
 }

@@ -22,6 +22,7 @@ CheckAccount(int fd ,int writefd, char *user , char *passwd)
     if(passwd[strlen(passwd)-1]  == '\n'){
   	    passwd[strlen(passwd)-1]  = '\0';	
     }
+
     while((num = read(fd, allWord, sizeof(allWord))) > 0){
         //printf(1,"%d\n",num);  
         for(int i =0;i<num;i++)
@@ -39,9 +40,7 @@ CheckAccount(int fd ,int writefd, char *user , char *passwd)
 
                 printf(1,"error\n");
                 //printf(1,"%d\n",num);
-	
-                //close(fd);
-                //close(writefd);
+
       	        return 1;
             }
             //while(i <num && allWord[i++] != '\n');
@@ -55,18 +54,22 @@ main(void)
 {
     int pid = 0,fd,writefd, wpid;
     char * username;
+    char namebuf[MAXLEN];
+    char passwdbuf[MAXLEN];
     char* password;
     mkdir("/home/");
     chmod("home",777);
     while(1)
     {
         printf(1,"Username: ");
-		username = gets("username", MAXLEN);
+		username = gets(namebuf, MAXLEN);
 		
         printf(1,"Password: ");
-		password = gets("password", MAXLEN);
+		password = gets(passwdbuf, MAXLEN);
+
+
         dup(0);  // stdout
-	dup(0);  // stderr
+	    dup(0);  // stderr
         //printf(1, "init:
         if((writefd = open("/.nowuserid", O_WRONLY)) < 0){
             printf(1,"Login: can't open nowuserid\n");
@@ -78,7 +81,7 @@ main(void)
         }
         
         if(CheckAccount(fd,writefd,username,password)){
-	    close(fd);
+	        close(fd);
             close(writefd);
 	    
             printf(2,"Hello %s, have a nice's day\n", username);            
@@ -98,13 +101,16 @@ main(void)
             if(pid == 0){   
                 char * uname[] = {username,0};
 		        char * dirToCreate = "/home/";
-      	    	strcpy(dirToCreate + strlen(dirToCreate), username);     	     	mkdir(dirToCreate);
+      	    	strcpy(dirToCreate + strlen(dirToCreate), username);
+                mkdir(dirToCreate);
                 exec("sh", uname);
                 printf(1, "login: exec sh failed\n");
                 exit();
             }
         }
         else{
+            close(fd);
+            close(writefd);
             printf(1,"you print error username or password\n");
             printf(1,"please input your account again\n");
         }

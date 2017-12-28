@@ -16,10 +16,10 @@
 #include "file.h"
 #include "fcntl.h"
 
-//check the user premission. If return 1 mean can do
-//p_type mean Premission, read or write or execute 
+//check the user permission. If return 1 mean can do
+//p_type mean Permission, read or write or execute 
 int 
-checkPremission(const struct inode *ip, int P_type)
+checkPermission(const struct inode *ip, int P_type)
 {
   struct inode *id;
   char userid[30];
@@ -215,7 +215,7 @@ sys_fstat(void)
     return -1;
 
 
-  if(checkPremission(f->ip,P_execute) == 0)
+  if(checkPermission(f->ip,P_execute) == 0)
   {
 
     return -2;
@@ -317,7 +317,7 @@ sys_unlink(void)
   if((ip = dirlookup(dp, name, &off)) == 0)
     goto bad;
 
-  if( checkPremission(dp,P_write) == 0)
+  if( checkPermission(dp,P_write) == 0)
   {
     iunlockput(dp);
     end_op();
@@ -501,7 +501,7 @@ sys_mkdir(void)
     return -3;
   }
  
-  if(checkPremission(id,P_write) == 0)
+  if(checkPermission(id,P_write) == 0)
   {
     end_op();
     return -2;
@@ -560,7 +560,7 @@ sys_chdir(void)
     return -1;
   }
   iunlock(ip);
-  if(checkPremission(ip,P_execute) == 0)
+  if(checkPermission(ip,P_execute) == 0)
   {
     end_op();
     return -2;
@@ -752,7 +752,7 @@ sys_cat(void)
     return -2;
   }
 
-  if(checkPremission(id,P_read) == 0)
+  if(checkPermission(id,P_read) == 0)
   {
     end_op();
     return -3;

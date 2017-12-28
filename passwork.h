@@ -58,6 +58,7 @@ void pseudoRandom(char key, char encodeKey[], int len) {
     bnew = (ran * 7) % 255;
     encodeKey[i] = (char) bnew;
   }
+encodeKey[i] = '\0';
 }
  
 void encrypt(char plan[], char cipher[], char encodeKey[], int len) {
@@ -67,7 +68,7 @@ void encrypt(char plan[], char cipher[], char encodeKey[], int len) {
     if(cipher[i]<0)cipher[i]*=-1;
     cipher[i] = (cipher[i]%25)+65;
   }
-  cipher[i+1] = '\0';
+  cipher[i] = '\0';
 }
 
 void encodepasswd(char* cipher, char* passwd)

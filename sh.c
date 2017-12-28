@@ -218,7 +218,7 @@ main(int argc,char *argv[])
       else if((flag = chdir(buf+3)) < 0){
         if(flag == -2)
         {
-          printf(2, "cannot cd %s :premission deny\n", buf+3);  
+          printf(2, "cannot cd %s :permission deny\n", buf+3);  
         }
         else
           printf(2, "cannot cd %s\n", buf+3);

@@ -15,7 +15,7 @@ main(int argc, char *argv[])
   for(i = 1; i < argc; i++){
     if((flag = (mkdir(argv[i]))) < 0){
       if(flag == -2)
-        printf(2, "mkdir: %s failed to create: premission deny\n", argv[i]);
+        printf(2, "mkdir: %s failed to create: permission deny\n", argv[i]);
       else
         printf(2, "mkdir: %s failed to create %d\n", argv[i],flag);
       break;

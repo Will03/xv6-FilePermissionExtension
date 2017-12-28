@@ -37,7 +37,7 @@ ls(char *path, int commandNumber)
 
    if((flag = (fstat(fd, &st))) < 0){
     if(flag <= -2)
-      printf(2, "ls: cannot stat %s :premission deny\n", path);  
+      printf(2, "ls: cannot stat %s :permission deny\n", path);  
     else
       printf(2, "ls: cannot stat %s\n", path);
     close(fd);
@@ -68,13 +68,13 @@ ls(char *path, int commandNumber)
       }
       fileName = fmtname(buf);
       if(commandNumber == 0 && fileName[0] != '.')
-        printf(1, "%s %d %d %d %d %d %d\n", fileName, st.type, st.ino, st.size, st.premission, st.ownerid,st.groupid);
+        printf(1, "%s %d %d %d %d %d %d\n", fileName, st.type, st.ino, st.size, st.permission, st.ownerid,st.groupid);
 
       else if ( commandNumber == 0 &&  (!strcmp(fileName,".             ")||!strcmp(fileName,"..            ")))
-        printf(1, "%s %d %d %d %d %d %d\n", fileName, st.type, st.ino, st.size, st.premission, st.ownerid,st.groupid);
+        printf(1, "%s %d %d %d %d %d %d\n", fileName, st.type, st.ino, st.size, st.permission, st.ownerid,st.groupid);
 
       else if(commandNumber == 1)
-        printf(1, "%s %d %d %d %d %d %d\n", fileName, st.type, st.ino, st.size, st.premission, st.ownerid,st.groupid);
+        printf(1, "%s %d %d %d %d %d %d\n", fileName, st.type, st.ino, st.size, st.permission, st.ownerid,st.groupid);
       
     }
     break;

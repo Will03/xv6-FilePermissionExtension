@@ -455,7 +455,7 @@ stati(struct inode *ip, struct stat *st)
   st->type = ip->type;
   st->nlink = ip->nlink;
   st->size = ip->size;
-  st->premission = ip->permission;
+  st->permission = ip->permission;
   st->groupid = ip->groupid;
   st->ownerid = ip->ownerid;
   st->attribute = ip->attributes;

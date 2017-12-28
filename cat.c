@@ -33,7 +33,7 @@ main(int argc, char *argv[])
   for(i = 1; i < argc; i++){
     if((flag = cat(argv[i]))<0){
       if(flag == -3)
-        printf(2, "cat: premission deny\n");
+        printf(2, "cat: permission deny\n");
       else if(flag == -2)
         printf(2, "cat: open file error\n");
       else if(flag == -1)
