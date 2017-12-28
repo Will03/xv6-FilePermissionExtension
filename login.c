@@ -36,11 +36,20 @@ CheckAccount(int fd ,int writefd, char *user , char *passwd)
             encodepasswd(cipher,passwd);
 
             if(!strcmp(user,Auser) && !strcmp(cipher,Apassword)){
+
+
                 if(write(writefd,AID,sizeof(AID)) <= 0)
+                    printf(1,"error\n");
+                int now = 0,id = 0,mod = 0;
+            
 
-                printf(1,"error\n");
-                //printf(1,"%d\n",num);
-
+                for(int i =0 ;AID[i]!=';'&& AID[i]!='\0';i++,now++){
+                    id *= 10;
+                    
+                    id += AID[i] - 48;
+                }
+                printf(2,"%d %d\n",setuid(id,mod),setgid(id,mod));
+                printf(2,"%d\n",getuid());
       	        return 1;
             }
             //while(i <num && allWord[i++] != '\n');

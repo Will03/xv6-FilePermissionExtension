@@ -86,6 +86,13 @@ allocproc(void)
   return 0;
 
 found:
+  if(nextpid==1){
+  	p->uid=0; 
+  	p->gid=0;
+  }else{
+  	p->uid = myproc()->uid;
+  	p->gid = myproc()->gid;
+  } 
   p->state = EMBRYO;
   p->pid = nextpid++;
 
@@ -531,4 +538,65 @@ procdump(void)
     }
     cprintf("\n");
   }
+}
+
+void
+ps(void)
+{
+  struct proc *p;
+
+  //sti();
+  acquire(&ptable.lock);
+  cprintf("UID\t\t name \t pid \t state \n\n");
+  for(p = ptable.proc; p < &ptable.proc[NPROC]; p++)
+  {
+    if(p->state == SLEEPING)
+    {
+      cprintf("%d\t\t %s \t %d \t SLEEPING\n",p->uid,p->name,p->pid);
+    }
+    else if(p->state == RUNNING)
+    {
+      cprintf("%d\t\t %s \t %d \t RUNNING\n",p->uid,p->name,p->pid);
+    }
+    else if(p->state == RUNNABLE)
+    {
+      cprintf("%d\t\t %s \t %d \t RUNNABLE\n",p->uid,p->name,p->pid);
+    }
+  }
+
+  release(&ptable.lock);
+cprintf("\n");
+  
+}
+
+int 
+setuid(int uid,int mod){
+    acquire(&ptable.lock);
+
+    if(mod == 0)
+      myproc()->uid = uid;  
+    else if(mod == 1)
+      myproc()->parent->uid = uid;
+    
+    release(&ptable.lock);
+    return uid;
+}
+
+int 
+setgid(int gid , int mod){
+    acquire(&ptable.lock);
+
+    if(mod == 0)
+      myproc()->gid = gid;  
+    else if(mod == 1)
+      myproc()->parent->gid = gid;
+    
+    release(&ptable.lock);
+    return gid;
+}
+
+int
+getuid(void)
+{
+  return myproc()->uid;
 }

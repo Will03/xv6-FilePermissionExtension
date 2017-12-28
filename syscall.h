@@ -28,3 +28,7 @@
 #define SYS_lsattr  26
 #define SYS_chattr  27
 #define SYS_cat 28
+#define SYS_ps 29
+#define SYS_setuid 30
+#define SYS_setgid 31
+#define SYS_getuid 32

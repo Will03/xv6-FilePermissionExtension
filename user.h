@@ -28,6 +28,10 @@ int chmod(char*,int);
 int lsfstat(int fd, struct stat*);
 int chattr(char*,int);
 int cat(char*);
+int ps(void);
+int setuid(int,int);
+int setgid(int,int);
+int getuid(void);
 // ulib.c
 int stat(char*, struct stat*);
 char* strcpy(char*, char*);

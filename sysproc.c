@@ -89,3 +89,43 @@ sys_uptime(void)
   release(&tickslock);
   return xticks;
 }
+int
+sys_ps(void)
+{
+  ps();
+  return 0;
+}
+int
+sys_setuid(void)
+{
+  int uid;
+  int mod;
+
+  if((argint(0, &uid) < 0))
+    return -1;
+  
+  if((argint(1, &mod) < 0))
+    return -1;
+  
+  return setuid(uid,mod);
+}
+int
+sys_setgid(void)
+{
+  int gid;
+  int mod;
+
+  if(argint(0, &gid) < 0 )
+    return -1;
+ 
+  if((argint(1, &mod) < 0))
+    return -1;
+  
+  return setgid(gid,mod);
+}
+int
+sys_getuid(void)
+{
+  
+  return getuid();
+}

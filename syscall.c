@@ -108,6 +108,10 @@ extern int sys_chmod(void);
 extern int sys_lsfstat(void);
 extern int sys_chattr(void);
 extern int sys_cat(void);
+extern int sys_ps(void);
+extern int sys_getuid(void);
+extern int sys_setuid(void);
+extern int sys_setgid(void);
 
 
 static int (*syscalls[])(void) = {
@@ -137,6 +141,11 @@ static int (*syscalls[])(void) = {
 [SYS_lsfstat]   sys_lsfstat,
 [SYS_chattr]   sys_chattr,
 [SYS_cat]   sys_cat,
+[SYS_ps]   sys_ps,
+[SYS_getuid]   sys_getuid,
+[SYS_setuid]   sys_setuid,
+[SYS_setgid]   sys_setgid,
+
 };
 
 void

@@ -87,6 +87,19 @@ main(int argc, char *argv[])
                 close(writefd);
                 exit();
             }
+            
+            if(write(writefd,ID,sizeof(ID)) <= 0)
+                printf(1,"error\n");
+            int now = 0,id = 0;
+        
+
+            for(int i =0 ;ID[i]!=';'&& ID[i]!='\0';i++,now++){
+                id *= 10;
+                
+                id += ID[i] - 48;
+            }
+            printf(2,"%d %d\n",setuid(id,1),setgid(id,1));
+            
             printf(2,"Welcome\n",user);
         }
          if(strcmp(cipher,password)!=0){
