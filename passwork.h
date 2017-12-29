@@ -48,6 +48,7 @@ readpasswdfile(char* allWord,char* Auser,char* Apassword ,char* AID,int num,int 
     return i;
 }
 
+//set a radom string
 void pseudoRandom(char key, char encodeKey[], int len) {
   int i;
   unsigned char ran;
@@ -61,6 +62,7 @@ void pseudoRandom(char key, char encodeKey[], int len) {
 encodeKey[i] = '\0';
 }
  
+// start encrypt
 void encrypt(char plan[], char cipher[], char encodeKey[], int len) {
   int i;
   for (i=0; i<len; i++) {

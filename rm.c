@@ -14,6 +14,7 @@ main(int argc, char *argv[])
 
   for(i = 1; i < argc; i++){
     flag = unlink(argv[i]);
+    printf(2,"%d\n",flag);
     if(flag<0){
       if(flag ==-2)
         printf(2, "rm: permission deny\n");

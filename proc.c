@@ -547,20 +547,20 @@ ps(void)
 
   //sti();
   acquire(&ptable.lock);
-  cprintf("UID\t\t name \t pid \t state \n\n");
+  cprintf("UID\tGID\t\t name \t pid \t state \n\n");
   for(p = ptable.proc; p < &ptable.proc[NPROC]; p++)
   {
     if(p->state == SLEEPING)
     {
-      cprintf("%d\t\t %s \t %d \t SLEEPING\n",p->uid,p->name,p->pid);
+      cprintf("%d\t%d\t\t %s \t %d \t SLEEPING\n",p->gid,p->uid,p->name,p->pid);
     }
     else if(p->state == RUNNING)
     {
-      cprintf("%d\t\t %s \t %d \t RUNNING\n",p->uid,p->name,p->pid);
+      cprintf("%d\t%d\t\t %s \t %d \t RUNNING\n",p->gid,p->uid,p->name,p->pid);
     }
     else if(p->state == RUNNABLE)
     {
-      cprintf("%d\t\t %s \t %d \t RUNNABLE\n",p->uid,p->name,p->pid);
+      cprintf("%d\t%d\t\t %s \t %d \t RUNNABLE\n",p->gid,p->uid,p->name,p->pid);
     }
   }
 

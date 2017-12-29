@@ -21,9 +21,8 @@
 int 
 checkPermission(const struct inode *ip, int P_type)
 {
-  struct inode *id;
-  char userid[30];
-  int nowid, num,now,idmode = 3;
+
+  int nowid,idmode = 3;
   short premis = ip->permission;
   short attri = ip->attributes;
   
@@ -31,6 +30,12 @@ checkPermission(const struct inode *ip, int P_type)
   {
     return 0;
   }
+
+
+  //use file to get uid/gid
+  struct inode *id;
+  char userid[30];
+  int num,now;
   begin_op();
   if((id = namei("/.nowuserid\0"))==0){
     end_op();
@@ -69,6 +74,20 @@ checkPermission(const struct inode *ip, int P_type)
       if(userid[now]!=';')break;
     }
   }
+
+  //use process to get uid/gid
+  
+  // nowid = getuid();
+  // if(ip->ownerid == nowid || nowid == 0)
+  // {
+  //   idmode = 1;
+  // }
+  // else if(ip->groupid == nowid){
+  //   idmode = 2;   
+  // }
+  // else {
+  //   idmode = 3;
+  // }
   switch(idmode)
   {
     case 1:
@@ -317,7 +336,7 @@ sys_unlink(void)
   if((ip = dirlookup(dp, name, &off)) == 0)
     goto bad;
 
-  if( checkPermission(dp,P_write) == 0)
+  if( checkPermission(dp,P_write) == 0 || checkPermission(ip,P_write) == 0)
   {
     iunlockput(dp);
     end_op();
@@ -621,7 +640,7 @@ sys_pipe(void)
   fd[1] = fd1;
   return 0;
 }
-
+//change the file's attribute
 int
 sys_chattr(void)
 {
@@ -680,6 +699,8 @@ sys_chattr(void)
   return mod;
 }
 
+
+//change the file's permission
 int
 sys_chmod(void)
 {
