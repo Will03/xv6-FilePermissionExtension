@@ -36,8 +36,8 @@ struct dinode {
 
   short ownerid;        // The ID of the user who owns the file.
   short groupid;        // The ID of the group who owns the file.
-  short permission;           // The files mode e.g. 0700
-  short attributes;
+  short permission;     // The files mode e.g. 0700
+  short attributes;     // The files attributes 0 or 1
 };
 
 // Inodes per block.
