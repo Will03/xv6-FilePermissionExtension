@@ -32,6 +32,7 @@ int ps(void);
 int setuid(int,int);
 int setgid(int,int);
 int getuid(void);
+int mv(char*,char*);
 // ulib.c
 int stat(char*, struct stat*);
 char* strcpy(char*, char*);

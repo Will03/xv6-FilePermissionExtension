@@ -32,3 +32,4 @@
 #define SYS_setuid 30
 #define SYS_setgid 31
 #define SYS_getuid 32
+#define SYS_mv 33

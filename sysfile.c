@@ -463,12 +463,29 @@ sys_open(void)
   char *path;
   int fd, omode;
   struct file *f;
+  
   struct inode *ip;
-
   if(argstr(0, &path) < 0 || argint(1, &omode) < 0)
     return -1;
 
   begin_op();
+  struct inode *id;
+  char name[DIRSIZ];
+
+  if(omode == O_CREATE)
+  {
+    id = nameiparent(path, name);
+    if(id<0)
+    {
+      end_op();
+      return -1;
+    }
+    if(checkPermission(id,P_write) == 0)
+    {
+      end_op();
+      return -2;
+    }
+  }
 
   if(omode & O_CREATE){
     ip = create(path, T_FILE, 0, 0);
@@ -476,11 +493,13 @@ sys_open(void)
       end_op();
       return -1;
     }
-  } else {
+    }else {
     if((ip = namei(path)) == 0){
       end_op();
       return -1;
     }
+
+ 
     ilock(ip);
     if(ip->type == T_DIR && omode != O_RDONLY){
       iunlockput(ip);
@@ -779,5 +798,62 @@ sys_cat(void)
     return -3;
   }
   end_op();
+  return 0;
+}
+
+int
+sys_mv(void)
+{
+  char *path,*path2;
+  struct inode *id;
+  char name[DIRSIZ];
+  begin_op();
+  if(argstr(0, &path) < 0 ||argstr(1, &path2) < 0 ){
+    end_op();
+    return -1;
+  }
+  if((id = nameiparent(path,name))==0){
+    end_op();
+    return -2;
+  }
+  
+  if(checkPermission(id,P_write) == 0)
+  {
+    end_op();
+    return -3;
+  }
+  end_op();
+
+  begin_op();
+
+  if((id = namei(path))==0){
+    end_op();
+    return -2;
+  }
+  
+  if(checkPermission(id,P_read) == 0)
+  {
+    end_op();
+    return -3;
+  }
+  end_op();
+
+/////
+
+
+  begin_op();
+  if((id = nameiparent(path2,name))==0){
+    end_op();
+    return -2;
+  }
+  end_op();
+  if(checkPermission(id,P_write) == 0)
+  {
+    
+    return -3;
+  }
+  
+
+   
   return 0;
 }
